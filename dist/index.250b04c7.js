@@ -472,9 +472,13 @@ controlRecipes();
 // window.addEventListener('hashchange', showRecipe) // when link is clicked and hash changes
 // window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load.
 // the above code can be written as
-['hashchange', 'load'].forEach(ev => {
-  window.addEventListener(ev, controlRecipes);
-});
+// ['hashchange', 'load'].forEach(ev => {
+// window.addEventListener(ev, controlRecipes)
+// });
+function init() {
+  _viewsRecipeViewDefault.default.addHandlerRender(controlRecipes);
+}
+init();
 
 },{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y"}],"1PFvP":[function(require,module,exports) {
 require('../modules/es.symbol');
@@ -12526,6 +12530,11 @@ class RecipeView {
   `;
     _classPrivateFieldGet(this, _parentElement).innerHTML = '';
     _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
+  }
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach(ev => {
+      window.addEventListener(ev, handler);
+    });
   }
 }
 function _clear2() {

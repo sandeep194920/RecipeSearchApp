@@ -44,6 +44,12 @@ controlRecipes();
 // window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load. 
 
 // the above code can be written as 
-['hashchange', 'load'].forEach(ev => {
-  window.addEventListener(ev, controlRecipes)
-});
+// ['hashchange', 'load'].forEach(ev => {
+//   window.addEventListener(ev, controlRecipes)
+// });
+
+function init() {
+  recipeView.addHandlerRender(controlRecipes)
+}
+
+init()
