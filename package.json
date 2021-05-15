@@ -15,7 +15,15 @@
     "sass": "^1.32.13"
   },
   "dependencies": {
+    "@babel/plugin-proposal-private-methods": "^7.13.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.14.0",
     "core-js": "^3.12.1",
     "regenerator-runtime": "^0.13.7"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-proposal-class-properties",
+      "@babel/plugin-proposal-private-methods"
+    ]
   }
 }
