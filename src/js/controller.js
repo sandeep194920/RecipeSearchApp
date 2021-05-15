@@ -1,6 +1,8 @@
 
 // import icons from '../img/icons.svg' // PARCEL 1
 import icons from 'url:../img/icons.svg' // PARCEL 2 -- for any asset file not related to programming file, we include url:
+import 'core-js/stable'; // for polyfilling everything but async functions
+import 'regenerator-runtime'; //for polyfilling async functions
 
 const recipeContainer = document.querySelector('.recipe');
 
@@ -15,8 +17,23 @@ const timeout = function (s) {
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
-// 1. Loading receipe
+// 1. Render a spinner
+const renderSpinner = function (parentEl) {
+  const markup = `
+              <div class="spinner">
+                <svg>
+                  <use href="${icons}#icon-loader"></use>
+                </svg>
+              </div>
+`
+  parentEl.innerHTML = ''
+  parentEl.insertAdjacentHTML('afterbegin', markup)
+}
+
+// 2. Loading receipe
+
 const showRecipe = async function () {
+  renderSpinner(recipeContainer)
   try {
     // const res = await fetch("https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604691c37cdc054bd0bc  ")
     const res = await fetch("https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bcc40")
@@ -39,7 +56,7 @@ const showRecipe = async function () {
     }
     console.log(recipe)
 
-    // 2 . Rendering the recipe
+    // 3. Rendering the recipe
     const markup = `
               <figure class="recipe__fig">
               <img src="${recipe.image}" alt="${recipe.title}" class="recipe__img" />
