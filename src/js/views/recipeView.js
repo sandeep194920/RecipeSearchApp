@@ -5,6 +5,10 @@ import { Fraction } from 'fractional'
 class RecipeView {
     #parentElement = document.querySelector('.recipe')
     #data;
+    #errorMessage = 'We could not get the recipe. Please try another one :💥💥💥 '
+    #message = '';
+
+
     render(data) {
         this.#data = data
         const markup = this.#generateMarkup(this.#data)
@@ -24,7 +28,7 @@ class RecipeView {
                   </svg>
                 </div>
   `
-        this.#parentElement.innerHTML = ''
+        this.#clear()
         this.#parentElement.insertAdjacentHTML('afterbegin', markup)
     }
 
@@ -107,6 +111,8 @@ class RecipeView {
         </div>
   `
     }
+
+
     #generateMarkupIngredient(ing) {
         return `
                 <li class="recipe__ingredient">
@@ -129,5 +135,39 @@ class RecipeView {
             window.addEventListener(ev, handler)
         });
     }
+
+
+    renderError(message = this.#errorMessage) {
+        console.log("SDFSDFAS")
+        const markup = `
+        <div class="error">
+            <div>
+              <svg>
+                <use href="${icons}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+        </div>
+        `
+        this.#clear()
+        this.#parentElement.insertAdjacentHTML('afterbegin', markup)
+    }
+
+    renderMessage(message = this.#message) {
+        console.log("SDFSDFAS")
+        const markup = `
+        <div class="error">
+            <div>
+              <svg>
+                <use href="${icons}#icon-simle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+        </div>
+        `
+        this.#clear()
+        this.#parentElement.insertAdjacentHTML('afterbegin', markup)
+    }
+
 }
 export default new RecipeView()

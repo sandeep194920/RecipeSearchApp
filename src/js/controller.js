@@ -28,9 +28,8 @@ const controlRecipes = async function () {
 
     // 2) Rendering the recipe to view
     recipeView.render(model.state.recipe)
-
   } catch (err) {
-    console.error(`${err} - from controller `)
+    recipeView.renderError()
   }
 }
 
@@ -48,6 +47,7 @@ controlRecipes();
 //   window.addEventListener(ev, controlRecipes)
 // });
 
+// the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
   recipeView.addHandlerRender(controlRecipes)
 }

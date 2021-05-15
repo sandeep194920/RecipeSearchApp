@@ -463,7 +463,7 @@ const controlRecipes = async function () {
     // 2) Rendering the recipe to view
     _viewsRecipeViewDefault.default.render(_model.state.recipe);
   } catch (err) {
-    console.error(`${err} - from controller `);
+    _viewsRecipeViewDefault.default.renderError();
   }
 };
 // This controller should have controlRecipes() and init()
@@ -475,6 +475,7 @@ controlRecipes();
 // ['hashchange', 'load'].forEach(ev => {
 // window.addEventListener(ev, controlRecipes)
 // });
+// the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
   _viewsRecipeViewDefault.default.addHandlerRender(controlRecipes);
 }
@@ -12497,6 +12498,8 @@ function _classApplyDescriptorSet(receiver, descriptor, value) {
 }
 var _parentElement = /*#__PURE__*/new WeakMap();
 var _data = /*#__PURE__*/new WeakMap();
+var _errorMessage = /*#__PURE__*/new WeakMap();
+var _message = /*#__PURE__*/new WeakMap();
 var _clear = /*#__PURE__*/new WeakSet();
 var _generateMarkup = /*#__PURE__*/new WeakSet();
 var _generateMarkupIngredient = /*#__PURE__*/new WeakSet();
@@ -12513,6 +12516,14 @@ class RecipeView {
       writable: true,
       value: void 0
     });
+    _errorMessage.set(this, {
+      writable: true,
+      value: 'We could not get the recipe. Please try another one :💥💥💥 '
+    });
+    _message.set(this, {
+      writable: true,
+      value: ''
+    });
   }
   render(data) {
     _classPrivateFieldSet(this, _data, data);
@@ -12528,13 +12539,43 @@ class RecipeView {
                   </svg>
                 </div>
   `;
-    _classPrivateFieldGet(this, _parentElement).innerHTML = '';
+    _classPrivateMethodGet(this, _clear, _clear2).call(this);
     _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
   }
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => {
       window.addEventListener(ev, handler);
     });
+  }
+  renderError(message = _classPrivateFieldGet(this, _errorMessage)) {
+    console.log("SDFSDFAS");
+    const markup = `
+        <div class="error">
+            <div>
+              <svg>
+                <use href="${_urlImgIconsSvgDefault.default}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+        </div>
+        `;
+    _classPrivateMethodGet(this, _clear, _clear2).call(this);
+    _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
+  }
+  renderMessage(message = _classPrivateFieldGet(this, _message)) {
+    console.log("SDFSDFAS");
+    const markup = `
+        <div class="error">
+            <div>
+              <svg>
+                <use href="${_urlImgIconsSvgDefault.default}#icon-simle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+        </div>
+        `;
+    _classPrivateMethodGet(this, _clear, _clear2).call(this);
+    _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
   }
 }
 function _clear2() {
@@ -13085,7 +13126,8 @@ const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    console.error(`${err} - 💥💥💥💥 `);
+    // console.error(`${err} - 💥💥💥💥 `)
+    throw err;
   }
 };
 
