@@ -1,57 +1,49 @@
 
 // importing model data
-import * as model from './model.js'
+import * as model from './model'
 
 // importing view data
 import recipeView from './views/recipeView';
 
 // import icons from '../img/icons.svg' // PARCEL 1
-import icons from 'url:../img/icons.svg' // PARCEL 2 -- for any asset file not related to programming file, we include url:
 import 'core-js/stable'; // for polyfilling everything but async functions
 import 'regenerator-runtime'; //for polyfilling async functions
 
 
-
-const recipeContainer = document.querySelector('.recipe');
-
-const timeout = function (s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error(`Request took too long! Timeout after ${s} second`));
-    }, s * 1000);
-  });
-};
 
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
 
 // Loading receipe
-const showRecipe = async function () {
+const controlRecipes = async function () {
   recipeView.renderSpinner()
   try {
-    // Load the recipe on hash change
+    // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
     if (!id) return
 
-    // 1) Loading the recipe
+    // 1) Loading the recipe from model
     await model.loadRecipe(id);
 
-    // 2) Rendering the recipe
+    // 2) Rendering the recipe to view
     recipeView.render(model.state.recipe)
 
   } catch (err) {
-    alert(err)
+    console.error(`${err} - from controller `)
   }
 }
 
-showRecipe();
+// This controller should have controlRecipes() and init()
 
+controlRecipes();
+
+// init()
 
 // window.addEventListener('hashchange', showRecipe) // when link is clicked and hash changes
 // window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load. 
 
 // the above code can be written as 
 ['hashchange', 'load'].forEach(ev => {
-  window.addEventListener(ev, showRecipe)
+  window.addEventListener(ev, controlRecipes)
 });
