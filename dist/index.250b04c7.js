@@ -476,6 +476,7 @@ const showRecipe = async function () {
   try {
     // Load the recipe on hash change
     const id = window.location.hash.slice(1);
+    if (!id) return;
     const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
     const data = await res.json();
     console.log(res);
@@ -594,7 +595,12 @@ const showRecipe = async function () {
   }
 };
 showRecipe();
-window.addEventListener('hashchange', showRecipe);
+// window.addEventListener('hashchange', showRecipe) // when link is clicked and hash changes
+// window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load.
+// the above code can be written as
+['hashchange', 'load'].forEach(ev => {
+  window.addEventListener(ev, showRecipe);
+});
 
 },{"url:../img/icons.svg":"3t5dV","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime":"62Qib"}],"3t5dV":[function(require,module,exports) {
 module.exports = require('./bundle-url').getBundleURL() + "icons.d4a14980.svg"
