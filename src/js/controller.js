@@ -1,8 +1,13 @@
 
+// importing model data
+import * as model from './model.js'
+
 // import icons from '../img/icons.svg' // PARCEL 1
 import icons from 'url:../img/icons.svg' // PARCEL 2 -- for any asset file not related to programming file, we include url:
 import 'core-js/stable'; // for polyfilling everything but async functions
 import 'regenerator-runtime'; //for polyfilling async functions
+
+
 
 const recipeContainer = document.querySelector('.recipe');
 
@@ -39,25 +44,29 @@ const showRecipe = async function () {
     const id = window.location.hash.slice(1);
     if (!id) return
 
-    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`)
-    const data = await res.json()
-    console.log(res)
-    console.log(data)
-    if (!res.ok) throw new Error(`${data.message} (${res.status})`)
-    let { recipe } = data.data
+    // const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`)
+    // const data = await res.json()
+    // console.log(res)
+    // console.log(data)
+    // if (!res.ok) throw new Error(`${data.message} (${res.status})`)
+    // let { recipe } = data.data
+    // // console.log(recipe)
+
+    // recipe = {
+    //   id: recipe.id,
+    //   title: recipe.title,
+    //   publisher: recipe.publisher,
+    //   sourceUrl: recipe.source_Url,
+    //   image: recipe.image_url,
+    //   servings: recipe.servings,
+    //   cookingTime: recipe.cooking_time,
+    //   ingredients: recipe.ingredients
+    // }
     // console.log(recipe)
 
-    recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_Url,
-      image: recipe.image_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients
-    }
-    console.log(recipe)
+    // 1) Loading the recipe
+    await model.loadRecipe(id);
+    const { recipe } = model.state
 
     // 3. Rendering the recipe
     const markup = `
