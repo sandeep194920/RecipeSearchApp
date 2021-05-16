@@ -72,8 +72,6 @@ export const getSearchResultsPage = function (page = state.search.page) {
     const pageEnd = page * state.search.resultsPerPage
     const pageStart = (page - 1) * state.search.resultsPerPage
 
-    console.log(pageStart, pageEnd)
-
     // we need to know at which page we currently are, 
 
     state.search.page = page

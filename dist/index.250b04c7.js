@@ -489,18 +489,31 @@ const controlSearchResults = async function () {
     await _model.loadSearchResults(query);
     // this will update model.state.search.results but will not return anything
     // await model.loadSearchResultsPage(1) // this will update model.state.search.results but will not return anything
-    // 3) Render results
-    _viewsResultsViewDefault.default.render(_model.getSearchResultsPage(6));
-    // 4) Show pagination buttons
-    _viewsPaginationViewDefault.default.render(_model.state.search);
+    // // 3) Render results
+    // resultsView.render(model.getSearchResultsPage())
+    // // 4) Show pagination buttons
+    // paginationView.render(model.state.search)
+    changePageHandler();
   } catch (error) {
     console.error(error);
   }
+};
+const controlPagination = function (gotoPage) {
+  // resultsView.render(model.getSearchResultsPage(gotoPage))
+  // // 4) Show pagination buttons
+  // paginationView.render(model.state.search)
+  changePageHandler(gotoPage);
+};
+const changePageHandler = function (gotoPage = 1) {
+  _viewsResultsViewDefault.default.render(_model.getSearchResultsPage(gotoPage));
+  // 4) Show pagination buttons
+  _viewsPaginationViewDefault.default.render(_model.state.search);
 };
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
   _viewsRecipeViewDefault.default.addHandlerRender(controlRecipes);
   _viewsSearchViewDefault.default.addHandlerSearch(controlSearchResults);
+  _viewsPaginationViewDefault.default.addHandlerClick(controlPagination);
 }
 init();
 
@@ -13193,7 +13206,6 @@ const getSearchResultsPage = function (page = state.search.page) {
   // const pageStart = pageEnd - 10
   const pageEnd = page * state.search.resultsPerPage;
   const pageStart = (page - 1) * state.search.resultsPerPage;
-  console.log(pageStart, pageEnd);
   // we need to know at which page we currently are,
   state.search.page = page;
   return state.search.results.slice(pageStart, pageEnd);
@@ -13362,9 +13374,8 @@ class PaginationView extends _ViewDefault.default {
     // Other pages
     // how many pages there are:
     const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
-    console.log(numPages);
     const pageForward = `
-        <button class="btn--inline pagination__btn--next">
+        <button class="btn--inline pagination__btn--next" data-goto=${currentPage + 1}>
             <span>Page ${currentPage + 1}</span>
             <svg class="search__icon">
             <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-right"></use>
@@ -13372,7 +13383,7 @@ class PaginationView extends _ViewDefault.default {
         </button>
         `;
     const pageBackward = `
-        <button class="btn--inline pagination__btn--prev">
+        <button class="btn--inline pagination__btn--prev" data-goto=${currentPage - 1}>
             <svg class="search__icon">
             <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-left"></use>
             </svg>
@@ -13397,6 +13408,17 @@ class PaginationView extends _ViewDefault.default {
     }
     console.log("1 page");
     return '';
+  }
+  addHandlerClick(handler) {
+    // event delegation - attaching event handler to parent instead of two individual btns. This is possible by event bubbling
+    this._parentElement.addEventListener('click', function (e) {
+      e.preventDefault();
+      const btn = e.target.closest('.btn--inline');
+      // incase if span is clicked also it should work. closest means, closest parent with the given class
+      if (!btn) return;
+      const gotoPage = +btn.dataset.goto;
+      handler(gotoPage);
+    });
   }
 }
 exports.default = new PaginationView();

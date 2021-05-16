@@ -16,11 +16,10 @@ class PaginationView extends View {
 
         // how many pages there are:
         const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage)
-        console.log(numPages)
 
         const pageForward =
             `
-        <button class="btn--inline pagination__btn--next">
+        <button class="btn--inline pagination__btn--next" data-goto=${currentPage + 1}>
             <span>Page ${currentPage + 1}</span>
             <svg class="search__icon">
             <use href="${icons}#icon-arrow-right"></use>
@@ -29,7 +28,7 @@ class PaginationView extends View {
         `;
         const pageBackward =
             `
-        <button class="btn--inline pagination__btn--prev">
+        <button class="btn--inline pagination__btn--prev" data-goto=${currentPage - 1}>
             <svg class="search__icon">
             <use href="${icons}#icon-arrow-left"></use>
             </svg>
@@ -61,7 +60,17 @@ class PaginationView extends View {
         return ''
     }
 
+    addHandlerClick(handler) {
+        // event delegation - attaching event handler to parent instead of two individual btns. This is possible by event bubbling
+        this._parentElement.addEventListener('click', function (e) {
+            e.preventDefault()
+            const btn = e.target.closest('.btn--inline') // incase if span is clicked also it should work. closest means, closest parent with the given class
+            if (!btn) return
+            const gotoPage = +btn.dataset.goto
+            handler(gotoPage)
+        })
 
+    }
 }
 
 export default new PaginationView()

@@ -23,9 +23,6 @@ class ResultsView extends View {
           </li>
         `
     }
-    // render(data) {
-    //     console.log("DSFFA")
-    // }
 }
 
 export default new ResultsView();

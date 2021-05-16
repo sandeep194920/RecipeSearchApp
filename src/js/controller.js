@@ -55,11 +55,14 @@ const controlSearchResults = async function () {
     await model.loadSearchResults(query) // this will update model.state.search.results but will not return anything
     // await model.loadSearchResultsPage(1) // this will update model.state.search.results but will not return anything
 
-    // 3) Render results
-    resultsView.render(model.getSearchResultsPage(6))
+    // // 3) Render results
+    // resultsView.render(model.getSearchResultsPage())
 
-    // 4) Show pagination buttons
-    paginationView.render(model.state.search)
+    // // 4) Show pagination buttons
+    // paginationView.render(model.state.search)
+
+    changePageHandler()
+
 
     // resultsView.render(model.state.search.results)
     // 4) Clear the input search field
@@ -69,9 +72,26 @@ const controlSearchResults = async function () {
   }
 }
 
+const controlPagination = function (gotoPage) {
+
+  // resultsView.render(model.getSearchResultsPage(gotoPage))
+
+  // // 4) Show pagination buttons
+  // paginationView.render(model.state.search)
+
+  changePageHandler(gotoPage)
+}
+
+const changePageHandler = function (gotoPage = 1) {
+  resultsView.render(model.getSearchResultsPage(gotoPage))
+
+  // 4) Show pagination buttons
+  paginationView.render(model.state.search)
+}
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
   recipeView.addHandlerRender(controlRecipes)
   searchView.addHandlerSearch(controlSearchResults)
+  paginationView.addHandlerClick(controlPagination)
 }
 init()
