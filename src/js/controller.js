@@ -33,7 +33,9 @@ const controlRecipes = async function () {
   try {
     // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
-    if (!id) return
+    if (!id) id = '5ed6604591c37cdc054bca5d' // default render veg pizza
+    // if (!id) return
+
 
     // 1) Loading the recipe from model
     await model.loadRecipe(id);
@@ -46,11 +48,12 @@ const controlRecipes = async function () {
 }
 
 const controlSearchResults = async function () {
+  console.log("Default")
   resultsView.renderSpinner()
   try {
     // 1) Get search query 
-    const query = searchView.getQuery()
-    if (!query) return
+    let query = searchView.getQuery()
+    if (!query) query = 'pizza'
     // 2) Load search results
     await model.loadSearchResults(query) // this will update model.state.search.results but will not return anything
     // await model.loadSearchResultsPage(1) // this will update model.state.search.results but will not return anything

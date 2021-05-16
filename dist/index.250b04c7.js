@@ -470,7 +470,9 @@ const controlRecipes = async function () {
   try {
     // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
-    if (!id) return;
+    if (!id) id = '5ed6604591c37cdc054bca5d';
+    // default render veg pizza
+    // if (!id) return
     // 1) Loading the recipe from model
     await _model.loadRecipe(id);
     // 2) Rendering the recipe to view
@@ -480,11 +482,12 @@ const controlRecipes = async function () {
   }
 };
 const controlSearchResults = async function () {
+  console.log("Default");
   _viewsResultsViewDefault.default.renderSpinner();
   try {
     // 1) Get search query
-    const query = _viewsSearchViewDefault.default.getQuery();
-    if (!query) return;
+    let query = _viewsSearchViewDefault.default.getQuery();
+    if (!query) query = 'pizza';
     // 2) Load search results
     await _model.loadSearchResults(query);
     // this will update model.state.search.results but will not return anything
@@ -13285,6 +13288,9 @@ class searchView {
     this._parentElement.querySelector('.search__field').value = '';
   }
   addHandlerSearch(handler) {
+    // default render pizza
+    handler();
+    // returns a promise as we are calling async function, but just wanted to trigger it for the first time to fill out left panel with pizzas
     this._parentElement.addEventListener('submit', function (e) {
       e.preventDefault();
       handler();

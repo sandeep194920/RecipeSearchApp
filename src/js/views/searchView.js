@@ -14,6 +14,8 @@ class searchView {
         // console.log(this._parentElement.querySelector('.search__field').value)
     }
     addHandlerSearch(handler) {
+        // default render pizza
+        handler() // returns a promise as we are calling async function, but just wanted to trigger it for the first time to fill out left panel with pizzas
         this._parentElement.addEventListener('submit', function (e) {
             e.preventDefault()
             handler()
