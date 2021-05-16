@@ -32,10 +32,10 @@ const controlRecipes = async function () {
   recipeView.renderSpinner()
   try {
     // 0) Load the recipe on hash change - init()
-    const id = window.location.hash.slice(1);
+    // let id = '#5ed6604591c37cdc054bca5d'
+    let id = window.location.hash.slice(1);
     if (!id) id = '5ed6604591c37cdc054bca5d' // default render veg pizza
     // if (!id) return
-
 
     // 1) Loading the recipe from model
     await model.loadRecipe(id);
@@ -48,7 +48,6 @@ const controlRecipes = async function () {
 }
 
 const controlSearchResults = async function () {
-  console.log("Default")
   resultsView.renderSpinner()
   try {
     // 1) Get search query 
