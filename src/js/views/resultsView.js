@@ -2,6 +2,8 @@ import View from './View'
 import icons from 'url:../../img/icons.svg'
 
 class ResultsView extends View {
+    _errorMessage = 'No recipes found for your search. Please try another one :💥💥💥 '
+    _message = '';
     _parentElement = document.querySelector('.results')
     _generateMarkup() {
         return this._data.map(this._generateMarkupPreview).join('')

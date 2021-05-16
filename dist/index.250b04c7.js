@@ -13078,6 +13078,8 @@ class View {
     _defineProperty(this, "_data", void 0);
   }
   render(data) {
+    console.log("REACHED");
+    if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
     this._data = data;
     const markup = this._generateMarkup(this._data);
     this._clear();
@@ -13098,6 +13100,7 @@ class View {
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   renderError(message = this._errorMessage) {
+    console.log(this._errorMessage);
     console.log("SDFSDFAS");
     const markup = `
         <div class="error">
@@ -13273,6 +13276,8 @@ function _defineProperty(obj, key, value) {
 class ResultsView extends _ViewDefault.default {
   constructor(...args) {
     super(...args);
+    _defineProperty(this, "_errorMessage", 'No recipes found for your search. Please try another one :💥💥💥 ');
+    _defineProperty(this, "_message", '');
     _defineProperty(this, "_parentElement", document.querySelector('.results'));
   }
   _generateMarkup() {
