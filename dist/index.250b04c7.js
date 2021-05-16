@@ -452,16 +452,18 @@ var _viewsSearchView = require('./views/searchView');
 var _viewsSearchViewDefault = _parcelHelpers.interopDefault(_viewsSearchView);
 var _viewsResultsView = require('./views/resultsView');
 var _viewsResultsViewDefault = _parcelHelpers.interopDefault(_viewsResultsView);
-// https://forkify-api.herokuapp.com/v2
+var _viewsPaginationView = require('./views/paginationView');
+var _viewsPaginationViewDefault = _parcelHelpers.interopDefault(_viewsPaginationView);
+// API -  https://forkify-api.herokuapp.com/v2
 // /////////////////////////////////////
 // hot module replacement by parcel. Hot module replacement allows you to smart refresh the page. Meaning, when you change something
 // on the page and save it, the live server won't refrersh the entire page, but instead the part which has been changed only
 // changes on the page.
 // for example, if you remove a console.log and save it, the page itself remains without refreshed, but if you observ in console,
 // it says console cleared
-if (module.hot) {
-  module.hot.accept();
-}
+// if (module.hot) {
+// module.hot.accept()
+// }
 // Loading receipe
 const controlRecipes = async function () {
   _viewsRecipeViewDefault.default.renderSpinner();
@@ -486,10 +488,13 @@ const controlSearchResults = async function () {
     // 2) Load search results
     await _model.loadSearchResults(query);
     // this will update model.state.search.results but will not return anything
+    // await model.loadSearchResultsPage(1) // this will update model.state.search.results but will not return anything
     // 3) Render results
-    _viewsResultsViewDefault.default.render(_model.state.search.results);
+    _viewsResultsViewDefault.default.render(_model.getSearchResultsPage(6));
+    // 4) Show pagination buttons
+    _viewsPaginationViewDefault.default.render(_model.state.search);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
@@ -499,7 +504,7 @@ function init() {
 }
 init();
 
-},{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y","./views/searchView":"3rYQ6","./views/resultsView":"17PYN"}],"1PFvP":[function(require,module,exports) {
+},{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y","./views/searchView":"3rYQ6","./views/resultsView":"17PYN","./views/paginationView":"5u5Fw"}],"1PFvP":[function(require,module,exports) {
 require('../modules/es.symbol');
 require('../modules/es.symbol.description');
 require('../modules/es.symbol.async-iterator');
@@ -13078,7 +13083,6 @@ class View {
     _defineProperty(this, "_data", void 0);
   }
   render(data) {
-    console.log("REACHED");
     if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
     this._data = data;
     const markup = this._generateMarkup(this._data);
@@ -13100,8 +13104,6 @@ class View {
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   renderError(message = this._errorMessage) {
-    console.log(this._errorMessage);
-    console.log("SDFSDFAS");
     const markup = `
         <div class="error">
             <div>
@@ -13130,6 +13132,9 @@ _parcelHelpers.export(exports, "loadRecipe", function () {
 _parcelHelpers.export(exports, "loadSearchResults", function () {
   return loadSearchResults;
 });
+_parcelHelpers.export(exports, "getSearchResultsPage", function () {
+  return getSearchResultsPage;
+});
 require('regenerator-runtime');
 var _config = require('./config');
 var _helpers = require('./helpers');
@@ -13137,7 +13142,9 @@ const state = {
   recipe: {},
   search: {
     query: '',
-    results: []
+    results: [],
+    page: 1,
+    resultsPerPage: _config.RES_PER_PAGE
   }
 };
 const loadRecipe = async function (id) {
@@ -13175,7 +13182,23 @@ const loadSearchResults = async function (query) {
     throw error;
   }
 };
-loadSearchResults('pizza');
+const getSearchResultsPage = function (page = state.search.page) {
+  // page 1 -> 0 to 9
+  // page 2 -> 10 to 19
+  // page 3 -> 20 to 29
+  // Formula for pageStart and end
+  // const pageEnd = page * 10
+  // const pageStart = (page - 1) * 10
+  // alternate way to calculate pageStart
+  // const pageStart = pageEnd - 10
+  const pageEnd = page * state.search.resultsPerPage;
+  const pageStart = (page - 1) * state.search.resultsPerPage;
+  console.log(pageStart, pageEnd);
+  // we need to know at which page we currently are,
+  state.search.page = page;
+  return state.search.results.slice(pageStart, pageEnd);
+};
+getSearchResultsPage(1);
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config":"6pr2F","./helpers":"581KF","regenerator-runtime":"62Qib"}],"6pr2F":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
@@ -13186,8 +13209,12 @@ _parcelHelpers.export(exports, "API_URL", function () {
 _parcelHelpers.export(exports, "TIMEOUT_SEC", function () {
   return TIMEOUT_SEC;
 });
+_parcelHelpers.export(exports, "RES_PER_PAGE", function () {
+  return RES_PER_PAGE;
+});
 const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
 const TIMEOUT_SEC = 10;
+const RES_PER_PAGE = 10;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"581KF":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
@@ -13301,6 +13328,79 @@ class ResultsView extends _ViewDefault.default {
 }
 exports.default = new ResultsView();
 
-},{"./View":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/icons.svg":"3t5dV"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequirefade")
+},{"./View":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/icons.svg":"3t5dV"}],"5u5Fw":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _View = require('./View');
+var _ViewDefault = _parcelHelpers.interopDefault(_View);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+function _defineProperty(obj, key, value) {
+  if ((key in obj)) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+class PaginationView extends _ViewDefault.default {
+  constructor(...args) {
+    super(...args);
+    _defineProperty(this, "_parentElement", document.querySelector('.pagination'));
+  }
+  _generateMarkup() {
+    const currentPage = this._data.page;
+    // CASES NEED TO BE TAKEN CARE OF
+    // Page 1 and there are other pages
+    // Page 1 and there are No other pages
+    // Last Page
+    // Other pages
+    // how many pages there are:
+    const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
+    console.log(numPages);
+    const pageForward = `
+        <button class="btn--inline pagination__btn--next">
+            <span>Page ${currentPage + 1}</span>
+            <svg class="search__icon">
+            <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-right"></use>
+            </svg>
+        </button>
+        `;
+    const pageBackward = `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+            <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${currentPage - 1}</span>
+        </button>
+        `;
+    // Page 1 and there are other pages
+    if (currentPage === 1 && numPages > 1) {
+      console.log("Page 1 and other pages");
+      return pageForward;
+    }
+    // Page 1 and there are No other pages
+    // Last page
+    if (currentPage === numPages && numPages > 1) {
+      console.log("Last page");
+      return pageBackward;
+    }
+    // Other pages
+    if (currentPage < numPages) {
+      console.log("We have Other pages");
+      return [pageForward, pageBackward].join('');
+    }
+    console.log("1 page");
+    return '';
+  }
+}
+exports.default = new PaginationView();
+
+},{"./View":"48jhP","url:../../img/icons.svg":"3t5dV","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequirefade")
 
 //# sourceMappingURL=index.250b04c7.js.map

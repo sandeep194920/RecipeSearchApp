@@ -9,7 +9,9 @@ import 'core-js/stable'; // for polyfilling everything but async functions
 import 'regenerator-runtime'; //for polyfilling async functions
 import searchView from './views/searchView';
 import resultsView from './views/resultsView';
-// https://forkify-api.herokuapp.com/v2
+import paginationView from './views/paginationView';
+
+//API -  https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
 
@@ -18,9 +20,11 @@ import resultsView from './views/resultsView';
 // changes on the page. 
 // for example, if you remove a console.log and save it, the page itself remains without refreshed, but if you observ in console,
 // it says console cleared
-if (module.hot) {
-  module.hot.accept()
-}
+
+
+// if (module.hot) {
+//   module.hot.accept()
+// }
 
 // Loading receipe
 
@@ -49,13 +53,19 @@ const controlSearchResults = async function () {
     if (!query) return
     // 2) Load search results
     await model.loadSearchResults(query) // this will update model.state.search.results but will not return anything
+    // await model.loadSearchResultsPage(1) // this will update model.state.search.results but will not return anything
 
     // 3) Render results
-    resultsView.render(model.state.search.results)
+    resultsView.render(model.getSearchResultsPage(6))
+
+    // 4) Show pagination buttons
+    paginationView.render(model.state.search)
+
+    // resultsView.render(model.state.search.results)
     // 4) Clear the input search field
     // searchView.clearInput()
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
