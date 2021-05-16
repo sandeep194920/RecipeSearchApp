@@ -450,13 +450,13 @@ require('core-js/stable');
 require('regenerator-runtime');
 var _viewsSearchView = require('./views/searchView');
 var _viewsSearchViewDefault = _parcelHelpers.interopDefault(_viewsSearchView);
+var _viewsResultsView = require('./views/resultsView');
+var _viewsResultsViewDefault = _parcelHelpers.interopDefault(_viewsResultsView);
 // https://forkify-api.herokuapp.com/v2
 // /////////////////////////////////////
 // Loading receipe
 const controlRecipes = async function () {
   _viewsRecipeViewDefault.default.renderSpinner();
-  console.log(_viewsRecipeViewDefault.default.test);
-  // comes from View and not receipeView. This works because recipeView extends View
   try {
     // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
@@ -470,38 +470,30 @@ const controlRecipes = async function () {
   }
 };
 const controlSearchResults = async function () {
+  _viewsResultsViewDefault.default.renderSpinner();
   try {
     // 1) Get search query
     const query = _viewsSearchViewDefault.default.getQuery();
     if (!query) return;
+    console.log("The query is ", query);
     // 2) Load search results
     await _model.loadSearchResults(query);
     // this will update model.state.search.results but will not return anything
     // 3) Render results
     console.log(_model.state.search.results);
+    _viewsResultsViewDefault.default.render(_model.state.search.results);
   } catch (error) {
     console.log(error);
   }
 };
-// This controller should have controlRecipes() and init()
-// controlRecipes();
-// init()
-// window.addEventListener('hashchange', showRecipe) // when link is clicked and hash changes
-// window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load.
-// the above code can be written as
-// ['hashchange', 'load'].forEach(ev => {
-// window.addEventListener(ev, controlRecipes)
-// });
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
-  console.log("inti");
   _viewsRecipeViewDefault.default.addHandlerRender(controlRecipes);
   _viewsSearchViewDefault.default.addHandlerSearch(controlSearchResults);
 }
-controlSearchResults();
 init();
 
-},{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y","./views/searchView":"3rYQ6"}],"1PFvP":[function(require,module,exports) {
+},{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y","./views/searchView":"3rYQ6","./views/resultsView":"17PYN"}],"1PFvP":[function(require,module,exports) {
 require('../modules/es.symbol');
 require('../modules/es.symbol.description');
 require('../modules/es.symbol.async-iterator');
@@ -13077,7 +13069,6 @@ function _defineProperty(obj, key, value) {
 }
 class View {
   constructor() {
-    _defineProperty(this, "test", "This is a test variable");
     _defineProperty(this, "_data", void 0);
   }
   render(data) {
@@ -13234,21 +13225,19 @@ function _defineProperty(obj, key, value) {
 }
 class searchView {
   constructor() {
-    _defineProperty(this, "_parentEl", document.querySelector('.search'));
+    _defineProperty(this, "_parentElement", document.querySelector('.search'));
   }
   getQuery() {
-    const query = this._parentEl.querySelector('.search__field').value;
+    const query = this._parentElement.querySelector('.search__field').value;
     this._clearInput();
     return query;
   }
   _clearInput() {
-    console.log(this._parentEl.querySelector('.search__field').value);
-    this._parentEl.querySelector('.search__field').value = '';
-    console.log("Clearing input");
-    console.log(this._parentEl.querySelector('.search__field').value);
+    // console.log(this._parentElement.querySelector('.search__field').value)
+    this._parentElement.querySelector('.search__field').value = '';
   }
   addHandlerSearch(handler) {
-    this._parentEl.addEventListener('submit', function (e) {
+    this._parentElement.addEventListener('submit', function (e) {
       e.preventDefault();
       handler();
     });
@@ -13256,6 +13245,57 @@ class searchView {
 }
 exports.default = new searchView();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequirefade")
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"17PYN":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _View = require('./View');
+var _ViewDefault = _parcelHelpers.interopDefault(_View);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+function _defineProperty(obj, key, value) {
+  if ((key in obj)) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+class ResultsView extends _ViewDefault.default {
+  constructor(...args) {
+    super(...args);
+    _defineProperty(this, "_parentElement", document.querySelector('.results'));
+  }
+  _generateMarkup() {
+    return this._data.map(this._generateMarkupPreview).join('');
+  }
+  _generateMarkupPreview(result) {
+    return `
+            <li class="preview">
+            <a class="preview__link preview__link--active" href="#${result.id}">
+              <figure class="preview__fig">
+                <img src="${result.image}" alt="Test" />
+              </figure>
+              <div class="preview__data">
+                <h4 class="preview__title">${result.title}</h4>
+                <p class="preview__publisher">${result.publisher}</p>
+                <div class="preview__user-generated">
+                  <svg>
+                    <use href="${_urlImgIconsSvgDefault.default}#icon-user"></use>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </li>
+        `;
+  }
+}
+exports.default = new ResultsView();
+
+},{"./View":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/icons.svg":"3t5dV"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequirefade")
 
 //# sourceMappingURL=index.250b04c7.js.map

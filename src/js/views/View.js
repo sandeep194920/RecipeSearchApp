@@ -1,7 +1,6 @@
 import icons from 'url:../../img/icons.svg'
 
 export default class View {
-    test = "This is a test variable"
     _data;
     render(data) {
         this._data = data

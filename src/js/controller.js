@@ -8,9 +8,7 @@ import recipeView from './views/recipeView';
 import 'core-js/stable'; // for polyfilling everything but async functions
 import 'regenerator-runtime'; //for polyfilling async functions
 import searchView from './views/searchView';
-
-
-
+import resultsView from './views/resultsView';
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
@@ -18,7 +16,6 @@ import searchView from './views/searchView';
 // Loading receipe
 const controlRecipes = async function () {
   recipeView.renderSpinner()
-  console.log(recipeView.test) // comes from View and not receipeView. This works because recipeView extends View
   try {
     // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
@@ -35,17 +32,18 @@ const controlRecipes = async function () {
 }
 
 const controlSearchResults = async function () {
+  resultsView.renderSpinner()
   try {
     // 1) Get search query 
     const query = searchView.getQuery()
     if (!query) return
-
+    console.log("The query is ", query)
     // 2) Load search results
     await model.loadSearchResults(query) // this will update model.state.search.results but will not return anything
 
     // 3) Render results
     console.log(model.state.search.results)
-
+    resultsView.render(model.state.search.results)
     // 4) Clear the input search field
     // searchView.clearInput()
   } catch (error) {
@@ -53,26 +51,9 @@ const controlSearchResults = async function () {
   }
 }
 
-
-// This controller should have controlRecipes() and init()
-
-// controlRecipes();
-
-// init()
-
-// window.addEventListener('hashchange', showRecipe) // when link is clicked and hash changes
-// window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load. 
-
-// the above code can be written as 
-// ['hashchange', 'load'].forEach(ev => {
-//   window.addEventListener(ev, controlRecipes)
-// });
-
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
-  console.log("inti")
   recipeView.addHandlerRender(controlRecipes)
   searchView.addHandlerSearch(controlSearchResults)
 }
-controlSearchResults()
 init()
