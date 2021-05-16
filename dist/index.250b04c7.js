@@ -454,6 +454,14 @@ var _viewsResultsView = require('./views/resultsView');
 var _viewsResultsViewDefault = _parcelHelpers.interopDefault(_viewsResultsView);
 // https://forkify-api.herokuapp.com/v2
 // /////////////////////////////////////
+// hot module replacement by parcel. Hot module replacement allows you to smart refresh the page. Meaning, when you change something
+// on the page and save it, the live server won't refrersh the entire page, but instead the part which has been changed only
+// changes on the page.
+// for example, if you remove a console.log and save it, the page itself remains without refreshed, but if you observ in console,
+// it says console cleared
+if (module.hot) {
+  module.hot.accept();
+}
 // Loading receipe
 const controlRecipes = async function () {
   _viewsRecipeViewDefault.default.renderSpinner();
@@ -475,12 +483,10 @@ const controlSearchResults = async function () {
     // 1) Get search query
     const query = _viewsSearchViewDefault.default.getQuery();
     if (!query) return;
-    console.log("The query is ", query);
     // 2) Load search results
     await _model.loadSearchResults(query);
     // this will update model.state.search.results but will not return anything
     // 3) Render results
-    console.log(_model.state.search.results);
     _viewsResultsViewDefault.default.render(_model.state.search.results);
   } catch (error) {
     console.log(error);
@@ -13250,8 +13256,7 @@ var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 var _View = require('./View');
 var _ViewDefault = _parcelHelpers.interopDefault(_View);
-var _urlImgIconsSvg = require('url:../../img/icons.svg');
-var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+require('url:../../img/icons.svg');
 function _defineProperty(obj, key, value) {
   if ((key in obj)) {
     Object.defineProperty(obj, key, {
@@ -13276,18 +13281,13 @@ class ResultsView extends _ViewDefault.default {
   _generateMarkupPreview(result) {
     return `
             <li class="preview">
-            <a class="preview__link preview__link--active" href="#${result.id}">
+            <a class="preview__link" href="#${result.id}">
               <figure class="preview__fig">
                 <img src="${result.image}" alt="Test" />
               </figure>
               <div class="preview__data">
                 <h4 class="preview__title">${result.title}</h4>
                 <p class="preview__publisher">${result.publisher}</p>
-                <div class="preview__user-generated">
-                  <svg>
-                    <use href="${_urlImgIconsSvgDefault.default}#icon-user"></use>
-                  </svg>
-                </div>
               </div>
             </a>
           </li>

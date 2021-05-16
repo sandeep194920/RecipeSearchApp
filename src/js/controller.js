@@ -13,7 +13,17 @@ import resultsView from './views/resultsView';
 
 ///////////////////////////////////////
 
+// hot module replacement by parcel. Hot module replacement allows you to smart refresh the page. Meaning, when you change something
+// on the page and save it, the live server won't refrersh the entire page, but instead the part which has been changed only 
+// changes on the page. 
+// for example, if you remove a console.log and save it, the page itself remains without refreshed, but if you observ in console,
+// it says console cleared
+if (module.hot) {
+  module.hot.accept()
+}
+
 // Loading receipe
+
 const controlRecipes = async function () {
   recipeView.renderSpinner()
   try {
@@ -37,12 +47,10 @@ const controlSearchResults = async function () {
     // 1) Get search query 
     const query = searchView.getQuery()
     if (!query) return
-    console.log("The query is ", query)
     // 2) Load search results
     await model.loadSearchResults(query) // this will update model.state.search.results but will not return anything
 
     // 3) Render results
-    console.log(model.state.search.results)
     resultsView.render(model.state.search.results)
     // 4) Clear the input search field
     // searchView.clearInput()
