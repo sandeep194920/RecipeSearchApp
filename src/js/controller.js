@@ -1,4 +1,3 @@
-
 // importing model data
 import * as model from './model'
 
@@ -8,6 +7,7 @@ import recipeView from './views/recipeView';
 // import icons from '../img/icons.svg' // PARCEL 1
 import 'core-js/stable'; // for polyfilling everything but async functions
 import 'regenerator-runtime'; //for polyfilling async functions
+import searchView from './views/searchView';
 
 
 
@@ -33,9 +33,29 @@ const controlRecipes = async function () {
   }
 }
 
+const controlSearchResults = async function () {
+  try {
+    // 1) Get search query 
+    const query = searchView.getQuery()
+    if (!query) return
+
+    // 2) Load search results
+    await model.loadSearchResults(query) // this will update model.state.search.results but will not return anything
+
+    // 3) Render results
+    console.log(model.state.search.results)
+
+    // 4) Clear the input search field
+    // searchView.clearInput()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 // This controller should have controlRecipes() and init()
 
-controlRecipes();
+// controlRecipes();
 
 // init()
 
@@ -49,7 +69,9 @@ controlRecipes();
 
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
+  console.log("inti")
   recipeView.addHandlerRender(controlRecipes)
+  searchView.addHandlerSearch(controlSearchResults)
 }
-
+controlSearchResults()
 init()

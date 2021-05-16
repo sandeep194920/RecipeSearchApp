@@ -1,7 +1,12 @@
+import { async } from 'regenerator-runtime'
 import { API_URL } from './config'
 import { getJson } from './helpers'
 export const state = {
-    recipe: {}
+    recipe: {},
+    search: {
+        query: '',
+        results: []
+    }
 }
 
 // Fetches the data from forkify api
@@ -21,11 +26,28 @@ export const loadRecipe = async function (id) {
             cookingTime: recipe.cooking_time,
             ingredients: recipe.ingredients
         }
-        console.log(state.recipe)
     }
     catch (err) {
-        // console.error(`${err} - 💥💥💥💥 `)
-        throw err
+        throw err // handled by controller
     }
 }
 
+export const loadSearchResults = async function (query) {
+    try {
+        state.search.query = query
+        const { data } = await getJson(`${API_URL}?search=${query}`)
+
+        state.search.results = data.recipes.map(rec => {
+            return {
+                id: rec.id,
+                title: rec.title,
+                publisher: rec.publisher,
+                image: rec.image_url,
+            }
+        })
+    } catch (error) {
+        throw error // handled by controller
+    }
+}
+
+loadSearchResults('pizza')

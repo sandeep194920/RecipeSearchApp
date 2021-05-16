@@ -448,7 +448,8 @@ var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _viewsRecipeViewDefault = _parcelHelpers.interopDefault(_viewsRecipeView);
 require('core-js/stable');
 require('regenerator-runtime');
-// for polyfilling async functions
+var _viewsSearchView = require('./views/searchView');
+var _viewsSearchViewDefault = _parcelHelpers.interopDefault(_viewsSearchView);
 // https://forkify-api.herokuapp.com/v2
 // /////////////////////////////////////
 // Loading receipe
@@ -466,8 +467,22 @@ const controlRecipes = async function () {
     _viewsRecipeViewDefault.default.renderError();
   }
 };
+const controlSearchResults = async function () {
+  try {
+    // 1) Get search query
+    const query = _viewsSearchViewDefault.default.getQuery();
+    if (!query) return;
+    // 2) Load search results
+    await _model.loadSearchResults(query);
+    // this will update model.state.search.results but will not return anything
+    // 3) Render results
+    console.log(_model.state.search.results);
+  } catch (error) {
+    console.log(error);
+  }
+};
 // This controller should have controlRecipes() and init()
-controlRecipes();
+// controlRecipes();
 // init()
 // window.addEventListener('hashchange', showRecipe) // when link is clicked and hash changes
 // window.addEventListener('load', showRecipe) // when whole link is pasted in a new page the hash should still work, so we listen for window load.
@@ -477,11 +492,14 @@ controlRecipes();
 // });
 // the above functionality is being implemented in view and being called here as below. This is publish, subscribe pattern
 function init() {
+  console.log("inti");
   _viewsRecipeViewDefault.default.addHandlerRender(controlRecipes);
+  _viewsSearchViewDefault.default.addHandlerSearch(controlSearchResults);
 }
+controlSearchResults();
 init();
 
-},{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y"}],"1PFvP":[function(require,module,exports) {
+},{"core-js/stable":"1PFvP","regenerator-runtime":"62Qib","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./views/recipeView":"9e6b9","./model":"1hp6y","./views/searchView":"3rYQ6"}],"1PFvP":[function(require,module,exports) {
 require('../modules/es.symbol');
 require('../modules/es.symbol.description');
 require('../modules/es.symbol.async-iterator');
@@ -13104,10 +13122,18 @@ _parcelHelpers.export(exports, "state", function () {
 _parcelHelpers.export(exports, "loadRecipe", function () {
   return loadRecipe;
 });
+_parcelHelpers.export(exports, "loadSearchResults", function () {
+  return loadSearchResults;
+});
+require('regenerator-runtime');
 var _config = require('./config');
 var _helpers = require('./helpers');
 const state = {
-  recipe: {}
+  recipe: {},
+  search: {
+    query: '',
+    results: []
+  }
 };
 const loadRecipe = async function (id) {
   try {
@@ -13124,14 +13150,29 @@ const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
-    console.log(state.recipe);
   } catch (err) {
-    // console.error(`${err} - 💥💥💥💥 `)
     throw err;
   }
 };
+const loadSearchResults = async function (query) {
+  try {
+    state.search.query = query;
+    const {data} = await _helpers.getJson(`${_config.API_URL}?search=${query}`);
+    state.search.results = data.recipes.map(rec => {
+      return {
+        id: rec.id,
+        title: rec.title,
+        publisher: rec.publisher,
+        image: rec.image_url
+      };
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+loadSearchResults('pizza');
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config":"6pr2F","./helpers":"581KF"}],"6pr2F":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config":"6pr2F","./helpers":"581KF","regenerator-runtime":"62Qib"}],"6pr2F":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 _parcelHelpers.export(exports, "API_URL", function () {
@@ -13140,7 +13181,7 @@ _parcelHelpers.export(exports, "API_URL", function () {
 _parcelHelpers.export(exports, "TIMEOUT_SEC", function () {
   return TIMEOUT_SEC;
 });
-const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes';
+const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
 const TIMEOUT_SEC = 10;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"581KF":[function(require,module,exports) {
@@ -13170,6 +13211,61 @@ const getJson = async function (url) {
   }
 };
 
-},{"./config":"6pr2F","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequirefade")
+},{"./config":"6pr2F","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3rYQ6":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+function _classPrivateMethodGet(receiver, privateSet, fn) {
+  if (!privateSet.has(receiver)) {
+    throw new TypeError("attempted to get private field on non-instance");
+  }
+  return fn;
+}
+function _classPrivateFieldGet(receiver, privateMap) {
+  var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
+  return _classApplyDescriptorGet(receiver, descriptor);
+}
+function _classExtractFieldDescriptor(receiver, privateMap, action) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to " + action + " private field on non-instance");
+  }
+  return privateMap.get(receiver);
+}
+function _classApplyDescriptorGet(receiver, descriptor) {
+  if (descriptor.get) {
+    return descriptor.get.call(receiver);
+  }
+  return descriptor.value;
+}
+var _parentEl = /*#__PURE__*/new WeakMap();
+var _clearInput = /*#__PURE__*/new WeakSet();
+class searchView {
+  constructor() {
+    _clearInput.add(this);
+    _parentEl.set(this, {
+      writable: true,
+      value: document.querySelector('.search')
+    });
+  }
+  getQuery() {
+    const query = _classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value;
+    _classPrivateMethodGet(this, _clearInput, _clearInput2).call(this);
+    return query;
+  }
+  addHandlerSearch(handler) {
+    _classPrivateFieldGet(this, _parentEl).addEventListener('submit', function (e) {
+      e.preventDefault();
+      handler();
+    });
+  }
+}
+function _clearInput2() {
+  console.log(_classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value);
+  _classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value = '';
+  console.log("Clearing input");
+  console.log(_classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value);
+}
+exports.default = new searchView();
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequirefade")
 
 //# sourceMappingURL=index.250b04c7.js.map
