@@ -455,6 +455,8 @@ var _viewsSearchViewDefault = _parcelHelpers.interopDefault(_viewsSearchView);
 // Loading receipe
 const controlRecipes = async function () {
   _viewsRecipeViewDefault.default.renderSpinner();
+  console.log(_viewsRecipeViewDefault.default.test);
+  // comes from View and not receipeView. This works because recipeView extends View
   try {
     // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
@@ -12477,134 +12479,55 @@ _parcelHelpers.defineInteropFlag(exports);
 var _urlImgIconsSvg = require('url:../../img/icons.svg');
 var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
 var _fractional = require('fractional');
-function _classPrivateFieldGet(receiver, privateMap) {
-  var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
-  return _classApplyDescriptorGet(receiver, descriptor);
-}
-function _classApplyDescriptorGet(receiver, descriptor) {
-  if (descriptor.get) {
-    return descriptor.get.call(receiver);
-  }
-  return descriptor.value;
-}
-function _classPrivateMethodGet(receiver, privateSet, fn) {
-  if (!privateSet.has(receiver)) {
-    throw new TypeError("attempted to get private field on non-instance");
-  }
-  return fn;
-}
-function _classPrivateFieldSet(receiver, privateMap, value) {
-  var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set");
-  _classApplyDescriptorSet(receiver, descriptor, value);
-  return value;
-}
-function _classExtractFieldDescriptor(receiver, privateMap, action) {
-  if (!privateMap.has(receiver)) {
-    throw new TypeError("attempted to " + action + " private field on non-instance");
-  }
-  return privateMap.get(receiver);
-}
-function _classApplyDescriptorSet(receiver, descriptor, value) {
-  if (descriptor.set) {
-    descriptor.set.call(receiver, value);
+var _View = require('./View');
+var _ViewDefault = _parcelHelpers.interopDefault(_View);
+function _defineProperty(obj, key, value) {
+  if ((key in obj)) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   } else {
-    if (!descriptor.writable) {
-      throw new TypeError("attempted to set read only private field");
-    }
-    descriptor.value = value;
+    obj[key] = value;
   }
+  return obj;
 }
-var _parentElement = /*#__PURE__*/new WeakMap();
-var _data = /*#__PURE__*/new WeakMap();
-var _errorMessage = /*#__PURE__*/new WeakMap();
-var _message = /*#__PURE__*/new WeakMap();
-var _clear = /*#__PURE__*/new WeakSet();
-var _generateMarkup = /*#__PURE__*/new WeakSet();
-var _generateMarkupIngredient = /*#__PURE__*/new WeakSet();
-class RecipeView {
-  constructor() {
-    _generateMarkupIngredient.add(this);
-    _generateMarkup.add(this);
-    _clear.add(this);
-    _parentElement.set(this, {
-      writable: true,
-      value: document.querySelector('.recipe')
-    });
-    _data.set(this, {
-      writable: true,
-      value: void 0
-    });
-    _errorMessage.set(this, {
-      writable: true,
-      value: 'We could not get the recipe. Please try another one :💥💥💥 '
-    });
-    _message.set(this, {
-      writable: true,
-      value: ''
-    });
+class RecipeView extends _ViewDefault.default {
+  constructor(...args) {
+    super(...args);
+    _defineProperty(this, "_parentElement", document.querySelector('.recipe'));
+    _defineProperty(this, "_errorMessage", 'We could not get the recipe. Please try another one :💥💥💥 ');
+    _defineProperty(this, "_message", '');
   }
-  render(data) {
-    _classPrivateFieldSet(this, _data, data);
-    const markup = _classPrivateMethodGet(this, _generateMarkup, _generateMarkup2).call(this, _classPrivateFieldGet(this, _data));
-    _classPrivateMethodGet(this, _clear, _clear2).call(this);
-    _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
-  }
-  renderSpinner() {
-    const markup = `
-                <div class="spinner">
-                  <svg>
-                    <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
-                  </svg>
-                </div>
-  `;
-    _classPrivateMethodGet(this, _clear, _clear2).call(this);
-    _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
-  }
-  addHandlerRender(handler) {
-    ['hashchange', 'load'].forEach(ev => {
-      window.addEventListener(ev, handler);
-    });
-  }
-  renderError(message = _classPrivateFieldGet(this, _errorMessage)) {
-    console.log("SDFSDFAS");
-    const markup = `
-        <div class="error">
-            <div>
-              <svg>
-                <use href="${_urlImgIconsSvgDefault.default}#icon-alert-triangle"></use>
-              </svg>
-            </div>
-            <p>${message}</p>
-        </div>
-        `;
-    _classPrivateMethodGet(this, _clear, _clear2).call(this);
-    _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
-  }
-  renderMessage(message = _classPrivateFieldGet(this, _message)) {
-    console.log("SDFSDFAS");
-    const markup = `
-        <div class="error">
-            <div>
-              <svg>
-                <use href="${_urlImgIconsSvgDefault.default}#icon-simle"></use>
-              </svg>
-            </div>
-            <p>${message}</p>
-        </div>
-        `;
-    _classPrivateMethodGet(this, _clear, _clear2).call(this);
-    _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
-  }
-}
-function _clear2() {
-  _classPrivateFieldGet(this, _parentElement).innerHTML = '';
-}
-function _generateMarkup2() {
-  return `
+  // _data;
+  // render(data) {
+  // this._data = data
+  // const markup = this._generateMarkup(this._data)
+  // this._clear()
+  // this._parentElement.insertAdjacentHTML('afterbegin', markup)
+  // }
+  // _clear() {
+  // this._parentElement.innerHTML = ''
+  // }
+  // renderSpinner() {
+  // const markup = `
+  // <div class="spinner">
+  // <svg>
+  // <use href="${icons}#icon-loader"></use>
+  // </svg>
+  // </div>
+  // `
+  // this._clear()
+  // this._parentElement.insertAdjacentHTML('afterbegin', markup)
+  // }
+  _generateMarkup() {
+    return `
         <figure class="recipe__fig">
-        <img src="${_classPrivateFieldGet(this, _data).image}" alt="${_classPrivateFieldGet(this, _data).title}" class="recipe__img" />
+        <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
         <h1 class="recipe__title">
-          <span>${_classPrivateFieldGet(this, _data).title}</span>
+          <span>${this._data.title}</span>
         </h1>
         </figure>
 
@@ -12613,14 +12536,14 @@ function _generateMarkup2() {
           <svg class="recipe__info-icon">
             <use href="${_urlImgIconsSvgDefault.default}#icon-clock"></use>
           </svg>
-          <span class="recipe__info-data recipe__info-data--minutes">${_classPrivateFieldGet(this, _data).cookingTime}</span>
+          <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
           <span class="recipe__info-text">minutes</span>
         </div>
         <div class="recipe__info">
           <svg class="recipe__info-icon">
             <use href="${_urlImgIconsSvgDefault.default}#icon-users"></use>
           </svg>
-          <span class="recipe__info-data recipe__info-data--people">${_classPrivateFieldGet(this, _data).servings}</span>
+          <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
           <span class="recipe__info-text">servings</span>
 
           <div class="recipe__info-buttons">
@@ -12654,7 +12577,7 @@ function _generateMarkup2() {
         <h2 class="heading--2">Recipe ingredients</h2>
         <ul class="recipe__ingredient-list">
 
-          ${_classPrivateFieldGet(this, _data).ingredients.map(_classPrivateMethodGet(this, _generateMarkupIngredient, _generateMarkupIngredient2)).join("")}
+          ${this._data.ingredients.map(this._generateMarkupIngredient).join("")}
          
         </div>
 
@@ -12662,12 +12585,12 @@ function _generateMarkup2() {
         <h2 class="heading--2">How to cook it</h2>
         <p class="recipe__directions-text">
           This recipe was carefully designed and tested by
-          <span class="recipe__publisher">${_classPrivateFieldGet(this, _data).publisher}</span>. Please check out
+          <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
           directions at their website.
         </p>
         <a
           class="btn--small recipe__btn"
-          href="${_classPrivateFieldGet(this, _data).sourceUrl}"
+          href="${this._data.sourceUrl}"
           target="_blank"
         >
           <span>Directions</span>
@@ -12677,9 +12600,9 @@ function _generateMarkup2() {
         </a>
         </div>
   `;
-}
-function _generateMarkupIngredient2(ing) {
-  return `
+  }
+  _generateMarkupIngredient(ing) {
+    return `
                 <li class="recipe__ingredient">
                   <svg class="recipe__icon">
                     <use href="${_urlImgIconsSvgDefault.default}#icon-check"></use>
@@ -12693,10 +12616,31 @@ function _generateMarkupIngredient2(ing) {
                   </div>
                 </li>
             `;
+  }
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach(ev => {
+      window.addEventListener(ev, handler);
+    });
+  }
+  renderMessage(message = this._message) {
+    console.log("SDFSDFAS");
+    const markup = `
+        <div class="error">
+            <div>
+              <svg>
+                <use href="${_urlImgIconsSvgDefault.default}#icon-simle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+        </div>
+        `;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
 }
 exports.default = new RecipeView();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/icons.svg":"3t5dV","fractional":"5jzJt"}],"3t5dV":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/icons.svg":"3t5dV","fractional":"5jzJt","./View":"48jhP"}],"3t5dV":[function(require,module,exports) {
 module.exports = require('./bundle-url').getBundleURL() + "icons.d4a14980.svg"
 },{"./bundle-url":"3seVR"}],"3seVR":[function(require,module,exports) {
 "use strict";
@@ -13113,7 +13057,68 @@ Fraction.primeFactors = function(n)
 
 module.exports.Fraction = Fraction
 
-},{}],"1hp6y":[function(require,module,exports) {
+},{}],"48jhP":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+function _defineProperty(obj, key, value) {
+  if ((key in obj)) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+class View {
+  constructor() {
+    _defineProperty(this, "test", "This is a test variable");
+    _defineProperty(this, "_data", void 0);
+  }
+  render(data) {
+    this._data = data;
+    const markup = this._generateMarkup(this._data);
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  _clear() {
+    this._parentElement.innerHTML = '';
+  }
+  renderSpinner() {
+    const markup = `
+                <div class="spinner">
+                  <svg>
+                    <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
+                  </svg>
+                </div>
+  `;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderError(message = this._errorMessage) {
+    console.log("SDFSDFAS");
+    const markup = `
+        <div class="error">
+            <div>
+              <svg>
+                <use href="${_urlImgIconsSvgDefault.default}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+        </div>
+        `;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+}
+exports.default = View;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/icons.svg":"3t5dV"}],"1hp6y":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 _parcelHelpers.export(exports, "state", function () {
@@ -13214,55 +13219,40 @@ const getJson = async function (url) {
 },{"./config":"6pr2F","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3rYQ6":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
-function _classPrivateMethodGet(receiver, privateSet, fn) {
-  if (!privateSet.has(receiver)) {
-    throw new TypeError("attempted to get private field on non-instance");
+function _defineProperty(obj, key, value) {
+  if ((key in obj)) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
   }
-  return fn;
+  return obj;
 }
-function _classPrivateFieldGet(receiver, privateMap) {
-  var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
-  return _classApplyDescriptorGet(receiver, descriptor);
-}
-function _classExtractFieldDescriptor(receiver, privateMap, action) {
-  if (!privateMap.has(receiver)) {
-    throw new TypeError("attempted to " + action + " private field on non-instance");
-  }
-  return privateMap.get(receiver);
-}
-function _classApplyDescriptorGet(receiver, descriptor) {
-  if (descriptor.get) {
-    return descriptor.get.call(receiver);
-  }
-  return descriptor.value;
-}
-var _parentEl = /*#__PURE__*/new WeakMap();
-var _clearInput = /*#__PURE__*/new WeakSet();
 class searchView {
   constructor() {
-    _clearInput.add(this);
-    _parentEl.set(this, {
-      writable: true,
-      value: document.querySelector('.search')
-    });
+    _defineProperty(this, "_parentEl", document.querySelector('.search'));
   }
   getQuery() {
-    const query = _classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value;
-    _classPrivateMethodGet(this, _clearInput, _clearInput2).call(this);
+    const query = this._parentEl.querySelector('.search__field').value;
+    this._clearInput();
     return query;
   }
+  _clearInput() {
+    console.log(this._parentEl.querySelector('.search__field').value);
+    this._parentEl.querySelector('.search__field').value = '';
+    console.log("Clearing input");
+    console.log(this._parentEl.querySelector('.search__field').value);
+  }
   addHandlerSearch(handler) {
-    _classPrivateFieldGet(this, _parentEl).addEventListener('submit', function (e) {
+    this._parentEl.addEventListener('submit', function (e) {
       e.preventDefault();
       handler();
     });
   }
-}
-function _clearInput2() {
-  console.log(_classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value);
-  _classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value = '';
-  console.log("Clearing input");
-  console.log(_classPrivateFieldGet(this, _parentEl).querySelector('.search__field').value);
 }
 exports.default = new searchView();
 

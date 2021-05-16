@@ -18,6 +18,7 @@ import searchView from './views/searchView';
 // Loading receipe
 const controlRecipes = async function () {
   recipeView.renderSpinner()
+  console.log(recipeView.test) // comes from View and not receipeView. This works because recipeView extends View
   try {
     // 0) Load the recipe on hash change - init()
     const id = window.location.hash.slice(1);
